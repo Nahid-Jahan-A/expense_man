@@ -1,0 +1,16 @@
+{
+  "app_name": "খরচ ম্যানেজার",
+  "nav_home": "হোম",
+  "nav_expenses": "খরচ",
+  "nav_statistics": "পরিসংখ্যান",
+  "nav_settings": "সেটিংস",
+  "dashboard": "ড্যাশবোর্ড",
+  "total_expense": "মোট খরচ",
+  "this_month": "এই মাস",
+  "today": "আজ",
+  "this_week": "এই সপ্তাহ",
+  "recent_expenses": "সাম্প্রতিক খরচ",
+  "view_all": "সব দেখুন",
+  "no_expenses": "কোনো খরচ নেই",
+  "no_expenses_desc": "+ বাটনে ট্যাপ করে আপনার খরচ ট্র্যাক করা শুরু করুন"
+}

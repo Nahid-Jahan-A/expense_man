@@ -1,0 +1,16 @@
+{
+  "app_name": "Expense Manager",
+  "nav_home": "Home",
+  "nav_expenses": "Expenses",
+  "nav_statistics": "Statistics",
+  "nav_settings": "Settings",
+  "dashboard": "Dashboard",
+  "total_expense": "Total Expense",
+  "this_month": "This Month",
+  "today": "Today",
+  "this_week": "This Week",
+  "recent_expenses": "Recent Expenses",
+  "view_all": "View All",
+  "no_expenses": "No expenses yet",
+  "no_expenses_desc": "Start tracking your expenses by tapping the + button"
+}
