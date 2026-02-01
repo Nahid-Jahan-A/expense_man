@@ -51,7 +51,9 @@ class DashboardPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: () {
-                        context.read<DashboardBloc>().add(const LoadDashboard());
+                        context.read<DashboardBloc>().add(
+                          const LoadDashboard(),
+                        );
                       },
                       child: Text(context.tr('retry')),
                     ),
@@ -87,7 +89,12 @@ class DashboardPage extends StatelessWidget {
                             const SizedBox(height: 16),
 
                             // Summary cards
-                            _buildSummarySection(context, state, currency, locale),
+                            _buildSummarySection(
+                              context,
+                              state,
+                              currency,
+                              locale,
+                            ),
                             const SizedBox(height: 24),
 
                             // Recent expenses header
@@ -96,14 +103,15 @@ class DashboardPage extends StatelessWidget {
                               children: [
                                 Text(
                                   context.tr('recent_expenses'),
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     // Navigate to expenses page
-                                    DefaultTabController.of(context).animateTo(1);
+                                    DefaultTabController.of(
+                                      context,
+                                    ).animateTo(1);
                                   },
                                   child: Text(context.tr('view_all')),
                                 ),
@@ -117,7 +125,7 @@ class DashboardPage extends StatelessWidget {
                     // Recent expenses list
                     if (state.recentExpenses.isEmpty)
                       SliverFillRemaining(
-                        hasScrollBody: false,
+                        hasScrollBody: true,
                         child: EmptyState(
                           icon: Icons.receipt_long_outlined,
                           title: context.tr('no_expenses'),
@@ -130,35 +138,36 @@ class DashboardPage extends StatelessWidget {
                         sliver: BlocBuilder<CategoryBloc, CategoryState>(
                           builder: (context, categoryState) {
                             return SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final expense = state.recentExpenses[index];
-                                  final category = categoryState is CategoryLoaded
-                                      ? categoryState.getCategoryById(expense.categoryId)
-                                      : null;
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final expense = state.recentExpenses[index];
+                                final category =
+                                    categoryState is CategoryLoaded
+                                        ? categoryState.getCategoryById(
+                                          expense.categoryId,
+                                        )
+                                        : null;
 
-                                  return ExpenseListItem(
-                                    expense: expense,
-                                    category: category,
-                                    currency: currency,
-                                    locale: locale,
-                                    animationIndex: index,
-                                    onTap: () {
-                                      // Navigate to edit expense
-                                    },
-                                  );
-                                },
-                                childCount: state.recentExpenses.length,
-                              ),
+                                return ExpenseListItem(
+                                  expense: expense,
+                                  category: category,
+                                  currency: currency,
+                                  locale: locale,
+                                  animationIndex: index,
+                                  onTap: () {
+                                    // Navigate to edit expense
+                                  },
+                                );
+                              }, childCount: state.recentExpenses.length),
                             );
                           },
                         ),
                       ),
 
                     // Bottom padding
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 100),
-                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 100)),
                   ],
                 ),
               );
@@ -185,11 +194,13 @@ class DashboardPage extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.chevron_left),
           onPressed: () {
-            final prevMonth = DateTime(state.selectedYear, state.selectedMonth - 1);
-            context.read<DashboardBloc>().add(ChangeMonth(
-                  year: prevMonth.year,
-                  month: prevMonth.month,
-                ));
+            final prevMonth = DateTime(
+              state.selectedYear,
+              state.selectedMonth - 1,
+            );
+            context.read<DashboardBloc>().add(
+              ChangeMonth(year: prevMonth.year, month: prevMonth.month),
+            );
           },
         ),
         GestureDetector(
@@ -212,9 +223,9 @@ class DashboardPage extends StatelessWidget {
                 Text(
                   monthFormat.format(monthDate),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -223,11 +234,13 @@ class DashboardPage extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.chevron_right),
           onPressed: () {
-            final nextMonth = DateTime(state.selectedYear, state.selectedMonth + 1);
-            context.read<DashboardBloc>().add(ChangeMonth(
-                  year: nextMonth.year,
-                  month: nextMonth.month,
-                ));
+            final nextMonth = DateTime(
+              state.selectedYear,
+              state.selectedMonth + 1,
+            );
+            context.read<DashboardBloc>().add(
+              ChangeMonth(year: nextMonth.year, month: nextMonth.month),
+            );
           },
         ),
       ],
@@ -244,10 +257,9 @@ class DashboardPage extends StatelessWidget {
     );
 
     if (selected != null && context.mounted) {
-      context.read<DashboardBloc>().add(ChangeMonth(
-            year: selected.year,
-            month: selected.month,
-          ));
+      context.read<DashboardBloc>().add(
+        ChangeMonth(year: selected.year, month: selected.month),
+      );
     }
   }
 
@@ -261,49 +273,53 @@ class DashboardPage extends StatelessWidget {
       children: [
         // Main total card
         Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withAlpha(204),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.tr('total_expense'),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary.withAlpha(204),
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                CurrencyUtils.format(
-                  state.monthlySummary.totalAmount,
-                  currency: currency,
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withAlpha(204),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.tr('total_expense'),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onPrimary.withAlpha(204),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    CurrencyUtils.format(
+                      state.monthlySummary.totalAmount,
+                      currency: currency,
+                    ),
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${state.monthlySummary.transactionCount} ${locale == 'bn' ? 'টি লেনদেন' : 'transactions'}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary.withAlpha(179),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${state.monthlySummary.transactionCount} ${locale == 'bn' ? 'টি লেনদেন' : 'transactions'}',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onPrimary.withAlpha(179),
                     ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
+            )
             .animate()
             .fadeIn(delay: 100.ms)
             .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOutBack),
@@ -316,7 +332,10 @@ class DashboardPage extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 title: context.tr('today'),
-                value: CurrencyUtils.formatCompact(state.todayTotal, currency: currency),
+                value: CurrencyUtils.formatCompact(
+                  state.todayTotal,
+                  currency: currency,
+                ),
                 icon: Icons.today,
                 iconColor: Colors.orange,
                 animationIndex: 1,
@@ -326,7 +345,10 @@ class DashboardPage extends StatelessWidget {
             Expanded(
               child: SummaryCard(
                 title: context.tr('this_week'),
-                value: CurrencyUtils.formatCompact(state.weekTotal, currency: currency),
+                value: CurrencyUtils.formatCompact(
+                  state.weekTotal,
+                  currency: currency,
+                ),
                 icon: Icons.date_range,
                 iconColor: Colors.blue,
                 animationIndex: 2,
