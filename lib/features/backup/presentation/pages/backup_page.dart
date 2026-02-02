@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../bloc/backup_bloc.dart';
@@ -366,6 +368,73 @@ class BackupPageContent extends StatelessWidget {
     );
   }
 
+  Future<void> _requestStoragePermissionAndSave(BuildContext context) async {
+    // On Android 13+ (API 33), we don't need storage permission for app-specific directories
+    // For older versions, request permission
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.status;
+
+      if (status.isDenied) {
+        final result = await Permission.storage.request();
+
+        if (result.isDenied) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.tr('storage_permission_denied')),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+          return;
+        }
+
+        if (result.isPermanentlyDenied) {
+          if (context.mounted) {
+            _showPermissionDeniedDialog(context);
+          }
+          return;
+        }
+      }
+
+      if (status.isPermanentlyDenied) {
+        if (context.mounted) {
+          _showPermissionDeniedDialog(context);
+        }
+        return;
+      }
+    }
+
+    // Permission granted or not needed, proceed with saving
+    if (context.mounted) {
+      context.read<BackupBloc>().add(const SaveBackupLocallyEvent());
+    }
+  }
+
+  void _showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(context.tr('permission_required')),
+        content: Text(context.tr('storage_permission_message')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(context.tr('cancel')),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              openAppSettings();
+            },
+            child: Text(context.tr('open_settings')),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showExportOptionsDialog(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -416,7 +485,7 @@ class BackupPageContent extends StatelessWidget {
               color: Colors.green,
               onTap: () {
                 Navigator.of(dialogContext).pop();
-                context.read<BackupBloc>().add(const SaveBackupLocallyEvent());
+                _requestStoragePermissionAndSave(context);
               },
             ),
             const SizedBox(height: 12),

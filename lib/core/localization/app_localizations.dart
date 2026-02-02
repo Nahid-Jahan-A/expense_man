@@ -204,6 +204,12 @@ class AppLocalizations {
       'choose_export_method': 'Choose Export Method',
       'how_to_export': 'How would you like to export your backup?',
 
+      // Storage Permission
+      'storage_permission_denied': 'Storage permission denied. Cannot save backup.',
+      'permission_required': 'Permission Required',
+      'storage_permission_message': 'Storage permission is required to save backup files. Please enable it in app settings.',
+      'open_settings': 'Open Settings',
+
       // PDF
       'export': 'Export',
       'monthly_report': 'Monthly Report',
@@ -415,6 +421,12 @@ class AppLocalizations {
       'import_success': 'আমদানি সফল!',
       'choose_export_method': 'এক্সপোর্ট পদ্ধতি নির্বাচন করুন',
       'how_to_export': 'আপনি কীভাবে আপনার ব্যাকআপ এক্সপোর্ট করতে চান?',
+
+      // Storage Permission
+      'storage_permission_denied': 'স্টোরেজ অনুমতি প্রত্যাখ্যান করা হয়েছে। ব্যাকআপ সেভ করা যাচ্ছে না।',
+      'permission_required': 'অনুমতি প্রয়োজন',
+      'storage_permission_message': 'ব্যাকআপ ফাইল সেভ করতে স্টোরেজ অনুমতি প্রয়োজন। অনুগ্রহ করে অ্যাপ সেটিংস থেকে এটি সক্রিয় করুন।',
+      'open_settings': 'সেটিংস খুলুন',
 
       // PDF
       'export': 'রপ্তানি',
