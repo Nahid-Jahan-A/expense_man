@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'core/di/service_locator.dart';
 import 'features/expense/data/models/expense_model.dart';
 import 'features/category/data/models/category_model.dart';
@@ -9,6 +11,11 @@ import 'app/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
