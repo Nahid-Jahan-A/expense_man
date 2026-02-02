@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/expense.dart';
 import '../../../../core/constants/enums.dart';
 
@@ -123,12 +124,18 @@ class ExpenseLoaded extends ExpenseState {
 
 /// Error state
 class ExpenseError extends ExpenseState {
-  final String message;
+  final Failure failure;
 
-  const ExpenseError(this.message);
+  const ExpenseError(this.failure);
+
+  /// Get the error message
+  String get message => failure.message;
+
+  /// Get localized error message
+  String getLocalizedMessage(String locale) => failure.getLocalizedMessage(locale);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 
 /// State for expense operation success

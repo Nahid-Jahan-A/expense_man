@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/expense.dart';
 import '../repositories/expense_repository.dart';
 
@@ -8,7 +9,7 @@ class GetExpensesByDateRange {
 
   GetExpensesByDateRange(this._repository);
 
-  Future<Either<String, List<Expense>>> call(DateTime start, DateTime end) {
+  Future<Either<Failure, List<Expense>>> call(DateTime start, DateTime end) {
     return _repository.getExpensesByDateRange(start, end);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/expense.dart';
 import '../repositories/expense_repository.dart';
 
@@ -8,7 +9,7 @@ class UpdateExpense {
 
   UpdateExpense(this._repository);
 
-  Future<Either<String, void>> call(Expense expense) {
+  Future<Either<Failure, void>> call(Expense expense) {
     return _repository.updateExpense(expense);
   }
 }

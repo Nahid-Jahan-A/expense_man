@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/expense.dart';
 import '../../domain/usecases/add_expense.dart';
 import '../../domain/usecases/delete_expense.dart';
@@ -132,7 +133,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     final result = await addExpense(event.expense);
 
     if (result.isLeft()) {
-      emit(ExpenseError(result.fold((l) => l, (_) => '')));
+      emit(ExpenseError(result.fold((l) => l, (_) => CacheFailure.write())));
       return;
     }
 
@@ -170,7 +171,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     final result = await updateExpense(event.expense);
 
     if (result.isLeft()) {
-      emit(ExpenseError(result.fold((l) => l, (_) => '')));
+      emit(ExpenseError(result.fold((l) => l, (_) => CacheFailure.write())));
       return;
     }
 
@@ -207,7 +208,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     final result = await deleteExpense(event.id);
 
     if (result.isLeft()) {
-      emit(ExpenseError(result.fold((l) => l, (_) => '')));
+      emit(ExpenseError(result.fold((l) => l, (_) => CacheFailure.delete())));
       return;
     }
 

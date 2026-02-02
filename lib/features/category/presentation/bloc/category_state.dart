@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/category.dart';
 
 /// Base class for category states
@@ -71,12 +72,18 @@ class CategoryLoaded extends CategoryState {
 
 /// Error state
 class CategoryError extends CategoryState {
-  final String message;
+  final Failure failure;
 
-  const CategoryError(this.message);
+  const CategoryError(this.failure);
+
+  /// Get the error message
+  String get message => failure.message;
+
+  /// Get localized error message
+  String getLocalizedMessage(String locale) => failure.getLocalizedMessage(locale);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 
 /// State for category operation success

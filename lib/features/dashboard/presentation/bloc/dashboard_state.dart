@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../../../core/error/failures.dart';
 import '../../../expense/domain/entities/expense.dart';
 
 /// Base class for dashboard states
@@ -68,10 +69,16 @@ class DashboardLoaded extends DashboardState {
 
 /// Error state
 class DashboardError extends DashboardState {
-  final String message;
+  final Failure failure;
 
-  const DashboardError(this.message);
+  const DashboardError(this.failure);
+
+  /// Get the error message
+  String get message => failure.message;
+
+  /// Get localized error message
+  String getLocalizedMessage(String locale) => failure.getLocalizedMessage(locale);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

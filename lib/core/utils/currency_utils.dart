@@ -6,11 +6,12 @@ class CurrencyUtils {
   CurrencyUtils._();
 
   /// Format amount with currency symbol
+  /// Always uses English numerals (0-9) regardless of currency
   static String format(double amount, {Currency currency = Currency.bdt}) {
     final formatter = NumberFormat.currency(
       symbol: currency.symbol,
       decimalDigits: 2,
-      locale: currency == Currency.bdt ? 'bn_BD' : 'en_US',
+      locale: 'en_US',
     );
     return formatter.format(amount);
   }

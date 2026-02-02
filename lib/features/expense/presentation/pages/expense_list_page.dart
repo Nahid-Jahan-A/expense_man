@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/expense_bloc.dart';
 import '../bloc/expense_event.dart';
 import '../bloc/expense_state.dart';
@@ -12,9 +13,9 @@ import '../../../settings/presentation/bloc/settings_bloc.dart';
 import '../../../settings/presentation/bloc/settings_state.dart';
 import '../../../../core/constants/enums.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../widgets/common/expense_list_item.dart';
 import '../../../../widgets/common/empty_state.dart';
-import 'add_edit_expense_page.dart';
 
 /// Page displaying list of all expenses
 class ExpenseListPage extends StatefulWidget {
@@ -250,11 +251,7 @@ class _ExpenseListPageState extends State<ExpenseListPage> {
   }
 
   void _editExpense(BuildContext context, expense) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AddEditExpensePage(expense: expense),
-      ),
-    );
+    context.push(AppRoutes.editExpense, extra: expense);
   }
 }
 

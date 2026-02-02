@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../../../core/constants/enums.dart';
 
@@ -58,10 +59,16 @@ class SettingsLoaded extends SettingsState {
 
 /// Error state
 class SettingsError extends SettingsState {
-  final String message;
+  final Failure failure;
 
-  const SettingsError(this.message);
+  const SettingsError(this.failure);
+
+  /// Get the error message
+  String get message => failure.message;
+
+  /// Get localized error message
+  String getLocalizedMessage(String locale) => failure.getLocalizedMessage(locale);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

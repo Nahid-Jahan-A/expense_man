@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/category.dart';
 import '../repositories/category_repository.dart';
 
@@ -8,7 +9,7 @@ class AddCategory {
 
   AddCategory(this._repository);
 
-  Future<Either<String, void>> call(Category category) {
+  Future<Either<Failure, void>> call(Category category) {
     return _repository.addCategory(category);
   }
 }

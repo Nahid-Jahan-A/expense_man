@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/expense.dart';
 import '../repositories/expense_repository.dart';
 
@@ -8,7 +9,7 @@ class GetMonthlySummary {
 
   GetMonthlySummary(this._repository);
 
-  Future<Either<String, MonthlySummary>> call(int year, int month) {
+  Future<Either<Failure, MonthlySummary>> call(int year, int month) {
     return _repository.getMonthlySummary(year, month);
   }
 }

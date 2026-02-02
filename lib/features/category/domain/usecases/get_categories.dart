@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/category.dart';
 import '../repositories/category_repository.dart';
 
@@ -8,7 +9,7 @@ class GetCategories {
 
   GetCategories(this._repository);
 
-  Future<Either<String, List<Category>>> call() {
+  Future<Either<Failure, List<Category>>> call() {
     return _repository.getAllCategories();
   }
 }

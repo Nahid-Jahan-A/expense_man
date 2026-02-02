@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/expense.dart';
@@ -88,7 +89,7 @@ class _AddEditExpensePageState extends State<AddEditExpensePage> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
-              Navigator.of(context).pop(true);
+              context.pop(true);
             } else if (state is ExpenseError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

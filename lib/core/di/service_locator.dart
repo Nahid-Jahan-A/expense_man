@@ -31,15 +31,24 @@ import '../../features/pdf_export/presentation/bloc/pdf_export_bloc.dart';
 
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
+import '../../features/backup/data/services/backup_file_service.dart';
+import '../../features/backup/data/repositories/backup_repository_impl.dart';
+import '../../features/backup/domain/repositories/backup_repository.dart';
+import '../../features/backup/domain/usecases/create_backup.dart';
+import '../../features/backup/domain/usecases/export_backup.dart';
+import '../../features/backup/domain/usecases/import_backup.dart';
+import '../../features/backup/presentation/bloc/backup_bloc.dart';
+
 final sl = GetIt.instance;
 
 /// Initialize all dependencies
+/// Note: Hive must be initialized in main.dart before calling this function
 Future<void> initializeDependencies() async {
-  // Initialize Hive
-  await Hive.initFlutter();
-
   // Register Hive Boxes
   await _registerHiveBoxes();
+
+  // Register Services (must be before repositories that depend on them)
+  _registerServices();
 
   // Register DataSources
   _registerDataSources();
@@ -52,9 +61,6 @@ Future<void> initializeDependencies() async {
 
   // Register Blocs
   _registerBlocs();
-
-  // Register Services
-  _registerServices();
 }
 
 Future<void> _registerHiveBoxes() async {
@@ -94,6 +100,15 @@ void _registerRepositories() {
   sl.registerLazySingleton<SettingsRepository>(
     () => SettingsRepositoryImpl(sl()),
   );
+
+  sl.registerLazySingleton<BackupRepository>(
+    () => BackupRepositoryImpl(
+      expenseDataSource: sl(),
+      categoryDataSource: sl(),
+      settingsDataSource: sl(),
+      backupFileService: sl(),
+    ),
+  );
 }
 
 void _registerUseCases() {
@@ -110,6 +125,11 @@ void _registerUseCases() {
   sl.registerLazySingleton(() => AddCategory(sl()));
   sl.registerLazySingleton(() => UpdateCategory(sl()));
   sl.registerLazySingleton(() => DeleteCategory(sl()));
+
+  // Backup UseCases
+  sl.registerLazySingleton(() => CreateBackup(sl()));
+  sl.registerLazySingleton(() => ExportBackup(sl()));
+  sl.registerLazySingleton(() => ImportBackup(sl()));
 }
 
 void _registerBlocs() {
@@ -147,8 +167,18 @@ void _registerBlocs() {
   sl.registerFactory(
     () => PdfExportBloc(sl()),
   );
+
+  sl.registerFactory(
+    () => BackupBloc(
+      createBackup: sl(),
+      exportBackup: sl(),
+      importBackup: sl(),
+      repository: sl(),
+    ),
+  );
 }
 
 void _registerServices() {
   sl.registerLazySingleton<PdfGenerator>(() => PdfGeneratorImpl());
+  sl.registerLazySingleton<BackupFileService>(() => BackupFileService());
 }

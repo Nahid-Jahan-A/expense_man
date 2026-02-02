@@ -10,8 +10,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final GetExpenses getExpenses;
   final GetMonthlySummary getMonthlySummary;
 
-  DashboardBloc({required this.getExpenses, required this.getMonthlySummary})
-    : super(const DashboardInitial()) {
+  DashboardBloc({
+    required this.getExpenses,
+    required this.getMonthlySummary,
+  }) : super(const DashboardInitial()) {
     on<LoadDashboard>(_onLoadDashboard);
     on<RefreshDashboard>(_onRefreshDashboard);
     on<ChangeMonth>(_onChangeMonth);
@@ -61,32 +63,36 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     final expensesResult = await getExpenses();
     final summaryResult = await getMonthlySummary(year, month);
 
-    expensesResult.fold((failure) => emit(DashboardError(failure)), (expenses) {
-      summaryResult.fold((failure) => emit(DashboardError(failure)), (summary) {
-        // Calculate today's total
-        final todayTotal = expenses
-            .where((e) => e.dateTime.isToday)
-            .fold<double>(0, (sum, e) => sum + e.amount);
+    expensesResult.fold(
+      (failure) => emit(DashboardError(failure)),
+      (expenses) {
+        summaryResult.fold(
+          (failure) => emit(DashboardError(failure)),
+          (summary) {
+            // Calculate today's total
+            final todayTotal = expenses
+                .where((e) => e.dateTime.isToday)
+                .fold<double>(0, (sum, e) => sum + e.amount);
 
-        // Calculate this week's total
-        final weekTotal = expenses
-            .where((e) => e.dateTime.isThisWeek)
-            .fold<double>(0, (sum, e) => sum + e.amount);
+            // Calculate this week's total
+            final weekTotal = expenses
+                .where((e) => e.dateTime.isThisWeek)
+                .fold<double>(0, (sum, e) => sum + e.amount);
 
-        // Get recent expenses (last 5)
-        final recentExpenses = expenses.take(5).toList();
+            // Get recent expenses (last 5)
+            final recentExpenses = expenses.take(5).toList();
 
-        emit(
-          DashboardLoaded(
-            recentExpenses: recentExpenses,
-            monthlySummary: summary,
-            todayTotal: todayTotal,
-            weekTotal: weekTotal,
-            selectedYear: year,
-            selectedMonth: month,
-          ),
+            emit(DashboardLoaded(
+              recentExpenses: recentExpenses,
+              monthlySummary: summary,
+              todayTotal: todayTotal,
+              weekTotal: weekTotal,
+              selectedYear: year,
+              selectedMonth: month,
+            ));
+          },
         );
-      });
-    });
+      },
+    );
   }
 }

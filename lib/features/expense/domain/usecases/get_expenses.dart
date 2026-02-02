@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/expense.dart';
 import '../repositories/expense_repository.dart';
 
@@ -8,7 +9,7 @@ class GetExpenses {
 
   GetExpenses(this._repository);
 
-  Future<Either<String, List<Expense>>> call() {
+  Future<Either<Failure, List<Expense>>> call() {
     return _repository.getAllExpenses();
   }
 }

@@ -169,8 +169,8 @@ class AppTheme {
     );
   }
 
-  static CardThemeData _buildCardTheme(ColorScheme colorScheme) {
-    return CardThemeData(
+  static CardTheme _buildCardTheme(ColorScheme colorScheme) {
+    return CardTheme(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -301,8 +301,8 @@ class AppTheme {
     );
   }
 
-  static DialogThemeData _buildDialogTheme(ColorScheme colorScheme) {
-    return DialogThemeData(
+  static DialogTheme _buildDialogTheme(ColorScheme colorScheme) {
+    return DialogTheme(
       elevation: 6,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(28),

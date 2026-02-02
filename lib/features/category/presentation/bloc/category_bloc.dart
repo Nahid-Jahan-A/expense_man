@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/usecases/add_category.dart';
 import '../../domain/usecases/delete_category.dart';
 import '../../domain/usecases/get_categories.dart';
@@ -48,7 +49,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     final result = await addCategory(event.category);
 
     if (result.isLeft()) {
-      emit(CategoryError(result.fold((l) => l, (_) => '')));
+      emit(CategoryError(result.fold((l) => l, (_) => CacheFailure.write())));
       return;
     }
 
@@ -78,7 +79,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     final result = await updateCategory(event.category);
 
     if (result.isLeft()) {
-      emit(CategoryError(result.fold((l) => l, (_) => '')));
+      emit(CategoryError(result.fold((l) => l, (_) => CacheFailure.write())));
       return;
     }
 
@@ -108,7 +109,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     final result = await deleteCategory(event.id);
 
     if (result.isLeft()) {
-      emit(CategoryError(result.fold((l) => l, (_) => '')));
+      emit(CategoryError(result.fold((l) => l, (_) => CacheFailure.delete())));
       return;
     }
 

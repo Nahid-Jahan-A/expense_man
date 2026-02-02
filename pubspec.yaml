@@ -46,6 +46,10 @@ dependencies:
   dartz: ^0.10.1
   rxdart: ^0.28.0
   share_plus: ^10.1.4
+  file_picker: ^8.1.6
+
+  # Navigation
+  go_router: ^14.6.2
 
   # Color Picker
   flex_color_picker: ^3.6.0

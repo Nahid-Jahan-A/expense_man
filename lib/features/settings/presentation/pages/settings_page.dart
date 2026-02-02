@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../bloc/settings_bloc.dart';
 import '../bloc/settings_event.dart';
 import '../bloc/settings_state.dart';
 import '../../../../core/constants/enums.dart';
 import '../../../../core/localization/app_localizations.dart';
-import '../../../category/presentation/pages/category_management_page.dart';
-import '../../../pdf_export/presentation/pages/report_preview_page.dart';
+import '../../../../core/router/app_router.dart';
 
 /// Settings page for app configuration
 class SettingsPage extends StatelessWidget {
@@ -163,14 +163,7 @@ class SettingsPage extends StatelessWidget {
       title: Text(context.tr('manage_categories')),
       subtitle: Text(locale == 'bn' ? 'বিভাগ যোগ ও সম্পাদনা করুন' : 'Add and edit categories'),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const CategoryManagementPage(),
-          ),
-        );
-      },
+      onTap: () => context.push(AppRoutes.categories),
     ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1, end: 0);
   }
 
@@ -295,14 +288,9 @@ class SettingsPage extends StatelessWidget {
               FilledButton(
                 onPressed: () {
                   Navigator.pop(dialogContext);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReportPreviewPage(
-                        year: selectedYear,
-                        month: selectedMonth,
-                      ),
-                    ),
+                  context.push(
+                    AppRoutes.reportPreview,
+                    extra: ReportPreviewArgs(year: selectedYear, month: selectedMonth),
                   );
                 },
                 child: Text(locale == 'bn' ? 'প্রিভিউ দেখুন' : 'View Preview'),
@@ -330,15 +318,11 @@ class SettingsPage extends StatelessWidget {
       title: Text(context.tr('backup')),
       subtitle: Text(
         state.settings.lastBackupDate != null
-            ? '${locale == 'bn' ? 'সর্বশেষ:' : 'Last:'} ${_formatDate(state.settings.lastBackupDate!)}'
-            : locale == 'bn'
-                ? 'কোনো ব্যাকআপ নেই'
-                : 'No backup yet',
+            ? '${context.tr('last_backup')} ${_formatDate(state.settings.lastBackupDate!)}'
+            : context.tr('no_backup_yet'),
       ),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // Show backup options
-      },
+      onTap: () => context.push(AppRoutes.backup),
     ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.1, end: 0);
   }
 

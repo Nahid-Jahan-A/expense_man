@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/repositories/settings_repository.dart';
 import '../datasources/settings_local_datasource.dart';
@@ -11,73 +12,73 @@ class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl(this._localDataSource);
 
   @override
-  Future<Either<String, AppSettings>> getSettings() async {
+  Future<Either<Failure, AppSettings>> getSettings() async {
     try {
       final model = await _localDataSource.getSettings();
       return Right(model.toEntity());
     } catch (e) {
-      return Left('Failed to get settings: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> saveSettings(AppSettings settings) async {
+  Future<Either<Failure, void>> saveSettings(AppSettings settings) async {
     try {
       final model = SettingsModel.fromEntity(settings);
       await _localDataSource.saveSettings(model);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to save settings: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> updateThemeMode(String themeMode) async {
+  Future<Either<Failure, void>> updateThemeMode(String themeMode) async {
     try {
       await _localDataSource.updateThemeMode(themeMode);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update theme: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> updateLanguage(String languageCode) async {
+  Future<Either<Failure, void>> updateLanguage(String languageCode) async {
     try {
       await _localDataSource.updateLanguage(languageCode);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update language: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> updateCurrency(String currencyCode) async {
+  Future<Either<Failure, void>> updateCurrency(String currencyCode) async {
     try {
       await _localDataSource.updateCurrency(currencyCode);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update currency: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> setFirstLaunchComplete() async {
+  Future<Either<Failure, void>> setFirstLaunchComplete() async {
     try {
       await _localDataSource.setFirstLaunchComplete();
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update first launch: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> updateLastBackupDate(DateTime date) async {
+  Future<Either<Failure, void>> updateLastBackupDate(DateTime date) async {
     try {
       await _localDataSource.updateLastBackupDate(date);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update backup date: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 }

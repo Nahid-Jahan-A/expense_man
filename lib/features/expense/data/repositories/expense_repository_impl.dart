@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/expense.dart';
 import '../../domain/repositories/expense_repository.dart';
 import '../datasources/expense_local_datasource.dart';
@@ -11,67 +12,67 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   ExpenseRepositoryImpl(this._localDataSource);
 
   @override
-  Future<Either<String, List<Expense>>> getAllExpenses() async {
+  Future<Either<Failure, List<Expense>>> getAllExpenses() async {
     try {
       final models = await _localDataSource.getAllExpenses();
       final expenses = models.map((m) => m.toEntity()).toList();
       return Right(expenses);
     } catch (e) {
-      return Left('Failed to get expenses: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, Expense>> getExpenseById(String id) async {
+  Future<Either<Failure, Expense>> getExpenseById(String id) async {
     try {
       final model = await _localDataSource.getExpenseById(id);
       if (model == null) {
-        return const Left('Expense not found');
+        return Left(CacheFailure.notFound('Expense with id: $id'));
       }
       return Right(model.toEntity());
     } catch (e) {
-      return Left('Failed to get expense: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, List<Expense>>> getExpensesByDateRange(
+  Future<Either<Failure, List<Expense>>> getExpensesByDateRange(
       DateTime start, DateTime end) async {
     try {
       final models = await _localDataSource.getExpensesByDateRange(start, end);
       final expenses = models.map((m) => m.toEntity()).toList();
       return Right(expenses);
     } catch (e) {
-      return Left('Failed to get expenses: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, List<Expense>>> getExpensesByCategory(
+  Future<Either<Failure, List<Expense>>> getExpensesByCategory(
       String categoryId) async {
     try {
       final models = await _localDataSource.getExpensesByCategory(categoryId);
       final expenses = models.map((m) => m.toEntity()).toList();
       return Right(expenses);
     } catch (e) {
-      return Left('Failed to get expenses: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, List<Expense>>> getExpensesByMonth(
+  Future<Either<Failure, List<Expense>>> getExpensesByMonth(
       int year, int month) async {
     try {
       final models = await _localDataSource.getExpensesByMonth(year, month);
       final expenses = models.map((m) => m.toEntity()).toList();
       return Right(expenses);
     } catch (e) {
-      return Left('Failed to get expenses: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, MonthlySummary>> getMonthlySummary(
+  Future<Either<Failure, MonthlySummary>> getMonthlySummary(
       int year, int month) async {
     try {
       final models = await _localDataSource.getExpensesByMonth(year, month);
@@ -122,60 +123,60 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
         lowestExpense: amounts.reduce((a, b) => a < b ? a : b),
       ));
     } catch (e) {
-      return Left('Failed to get monthly summary: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> addExpense(Expense expense) async {
+  Future<Either<Failure, void>> addExpense(Expense expense) async {
     try {
       final model = ExpenseModel.fromEntity(expense);
       await _localDataSource.addExpense(model);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to add expense: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> updateExpense(Expense expense) async {
+  Future<Either<Failure, void>> updateExpense(Expense expense) async {
     try {
       final model = ExpenseModel.fromEntity(expense);
       await _localDataSource.updateExpense(model);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to update expense: ${e.toString()}');
+      return Left(CacheFailure.write(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> deleteExpense(String id) async {
+  Future<Either<Failure, void>> deleteExpense(String id) async {
     try {
       await _localDataSource.deleteExpense(id);
       return const Right(null);
     } catch (e) {
-      return Left('Failed to delete expense: ${e.toString()}');
+      return Left(CacheFailure.delete(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, void>> deleteAllExpenses() async {
+  Future<Either<Failure, void>> deleteAllExpenses() async {
     try {
       await _localDataSource.deleteAllExpenses();
       return const Right(null);
     } catch (e) {
-      return Left('Failed to delete all expenses: ${e.toString()}');
+      return Left(CacheFailure.delete(e.toString()));
     }
   }
 
   @override
-  Future<Either<String, List<Expense>>> searchExpenses(String query) async {
+  Future<Either<Failure, List<Expense>>> searchExpenses(String query) async {
     try {
       final models = await _localDataSource.searchExpenses(query);
       final expenses = models.map((m) => m.toEntity()).toList();
       return Right(expenses);
     } catch (e) {
-      return Left('Failed to search expenses: ${e.toString()}');
+      return Left(CacheFailure.read(e.toString()));
     }
   }
 }

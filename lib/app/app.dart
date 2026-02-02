@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/di/service_locator.dart';
+import '../core/router/app_router.dart';
 import '../features/expense/presentation/bloc/expense_bloc.dart';
 import '../features/expense/presentation/bloc/expense_event.dart';
 import '../features/category/presentation/bloc/category_bloc.dart';
@@ -14,7 +15,6 @@ import '../features/settings/presentation/bloc/settings_state.dart';
 import '../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../features/dashboard/presentation/bloc/dashboard_event.dart';
 import '../features/pdf_export/presentation/bloc/pdf_export_bloc.dart';
-import 'home_page.dart';
 
 /// Main application widget
 class ExpenseManagerApp extends StatelessWidget {
@@ -51,7 +51,7 @@ class ExpenseManagerApp extends StatelessWidget {
             locale = state.locale;
           }
 
-          return MaterialApp(
+          return MaterialApp.router(
             title: 'Expense Manager',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
@@ -65,7 +65,7 @@ class ExpenseManagerApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            home: const HomePage(),
+            routerConfig: AppRouter.router,
           );
         },
       ),

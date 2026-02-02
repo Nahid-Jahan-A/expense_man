@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../core/localization/app_localizations.dart';
-import '../features/dashboard/presentation/pages/dashboard_page.dart';
-import '../features/expense/presentation/pages/expense_list_page.dart';
-import '../features/expense/presentation/pages/add_edit_expense_page.dart';
-import '../features/settings/presentation/pages/settings_page.dart';
-import '../widgets/charts/statistics_page.dart';
+import '../core/router/app_router.dart';
 
 /// Home page with bottom navigation
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Widget child;
+
+  const HomePage({super.key, required this.child});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  int _currentIndex = 0;
   late final AnimationController _fabAnimationController;
-
-  final List<Widget> _pages = const [
-    DashboardPage(),
-    ExpenseListPage(),
-    StatisticsPage(),
-    SettingsPage(),
-  ];
 
   @override
   void initState() {
@@ -41,41 +32,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  int _calculateSelectedIndex(BuildContext context) {
+    final String location = GoRouterState.of(context).uri.path;
+    if (location.startsWith(AppRoutes.expenses)) {
+      return 1;
+    }
+    if (location.startsWith(AppRoutes.statistics)) {
+      return 2;
+    }
+    if (location.startsWith(AppRoutes.settings)) {
+      return 3;
+    }
+    return 0; // Default to dashboard
+  }
+
+  void _onItemTapped(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        context.go(AppRoutes.home);
+        break;
+      case 1:
+        context.go(AppRoutes.expenses);
+        break;
+      case 2:
+        context.go(AppRoutes.statistics);
+        break;
+      case 3:
+        context.go(AppRoutes.settings);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final selectedIndex = _calculateSelectedIndex(context);
 
-    return DefaultTabController(
-      length: 4,
-      child: Builder(
-        builder: (context) {
-          return Scaffold(
-            body: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: IndexedStack(
-                key: ValueKey(_currentIndex),
-                index: _currentIndex,
-                children: _pages,
-              ),
-            ),
-            floatingActionButton: _buildFab(context),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            bottomNavigationBar: _buildBottomNavBar(context, colorScheme),
-          );
-        },
-      ),
+    return Scaffold(
+      body: widget.child,
+      floatingActionButton: _buildFab(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildBottomNavBar(context, selectedIndex),
     );
   }
 
   Widget _buildFab(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => _navigateToAddExpense(context),
+      onPressed: () => context.push(AppRoutes.addExpense),
       elevation: 2,
       child: const Icon(Icons.add),
     )
@@ -90,15 +92,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         );
   }
 
-  Widget _buildBottomNavBar(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildBottomNavBar(BuildContext context, int selectedIndex) {
     return NavigationBar(
-      selectedIndex: _currentIndex,
-      onDestinationSelected: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-        DefaultTabController.of(context).animateTo(index);
-      },
+      selectedIndex: selectedIndex,
+      onDestinationSelected: (index) => _onItemTapped(index, context),
       destinations: [
         NavigationDestination(
           icon: const Icon(Icons.dashboard_outlined),
@@ -121,31 +118,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           label: context.tr('nav_settings'),
         ),
       ],
-    );
-  }
-
-  void _navigateToAddExpense(BuildContext context) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return const AddEditExpensePage();
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0);
-          const end = Offset.zero;
-          const curve = Curves.easeOutCubic;
-
-          var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve),
-          );
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 400),
-      ),
     );
   }
 }
