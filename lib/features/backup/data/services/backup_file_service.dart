@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/backup_model.dart';
 
@@ -71,54 +70,36 @@ class BackupFileService {
     return filePath;
   }
 
-  /// Save backup to external storage (Downloads/expense_backup folder)
+  /// Save backup to user-selected location using file picker
   Future<String> saveBackupToLocalStorage(BackupDataModel backupData) async {
-    // Request storage permission
-    final status = await Permission.storage.request();
-    if (!status.isGranted) {
-      // Try manage external storage for Android 11+
-      final manageStatus = await Permission.manageExternalStorage.request();
-      if (!manageStatus.isGranted) {
-        throw const FileSystemException('Storage permission denied');
-      }
-    }
-
-    // Get the Downloads directory or external storage
-    Directory? baseDir;
-
-    if (Platform.isAndroid) {
-      // Try to get the Downloads folder
-      baseDir = Directory('/storage/emulated/0/Download');
-      if (!await baseDir.exists()) {
-        // Fallback to external storage directory
-        baseDir = await getExternalStorageDirectory();
-      }
-    } else {
-      // For iOS and other platforms, use documents directory
-      baseDir = await getApplicationDocumentsDirectory();
-    }
-
-    if (baseDir == null) {
-      throw const FileSystemException('Could not access storage directory');
-    }
-
-    // Create expense_backup folder
-    final backupDir = Directory('${baseDir.path}/expense_backup');
-    if (!await backupDir.exists()) {
-      await backupDir.create(recursive: true);
-    }
-
     final fileName = generateBackupFileName();
-    final filePath = '${backupDir.path}/$fileName';
 
+    // Generate the JSON content
     final jsonString = const JsonEncoder.withIndent('  ').convert(
       backupData.toJson(),
     );
 
-    final file = File(filePath);
-    await file.writeAsString(jsonString, encoding: utf8);
+    // Let user choose where to save the file
+    final result = await FilePicker.platform.saveFile(
+      dialogTitle: 'Save Backup File',
+      fileName: fileName,
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+      bytes: utf8.encode(jsonString),
+    );
 
-    return filePath;
+    if (result == null) {
+      throw const FileSystemException('No location selected');
+    }
+
+    // On some platforms, saveFile returns the path but doesn't write the file
+    // So we need to write it manually if the file doesn't exist
+    final file = File(result);
+    if (!await file.exists()) {
+      await file.writeAsString(jsonString, encoding: utf8);
+    }
+
+    return result;
   }
 
   /// Pick a backup file using file picker
