@@ -66,6 +66,9 @@ dependencies:
   # Cupertino Icons
   cupertino_icons: ^1.0.8
 
+  # Native Splash Screen
+  flutter_native_splash: ^2.4.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -84,3 +87,17 @@ flutter:
     - assets/lottie/
     - assets/icons/
     - assets/fonts/
+
+# Native Splash Screen Configuration
+flutter_native_splash:
+  color: "#6750A4"
+  color_dark: "#1C1B1F"
+  android_12:
+    color: "#6750A4"
+    color_dark: "#1C1B1F"
+    icon_background_color: "#6750A4"
+    icon_background_color_dark: "#1C1B1F"
+  android: true
+  ios: false
+  web: false
+  fullscreen: true

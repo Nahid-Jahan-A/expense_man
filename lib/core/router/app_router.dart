@@ -9,10 +9,12 @@ import '../../features/pdf_export/presentation/pages/report_preview_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/backup/presentation/pages/backup_page.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../widgets/charts/statistics_page.dart';
 
 /// Route names for type-safe navigation
 abstract class AppRoutes {
+  static const String splash = '/splash';
   static const String home = '/';
   static const String dashboard = '/dashboard';
   static const String expenses = '/expenses';
@@ -34,9 +36,21 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     routes: [
+      // Splash screen route
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SplashPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
       // Shell route for bottom navigation
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
