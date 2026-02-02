@@ -12,6 +12,10 @@ abstract class BackupRepository {
   /// Returns the file path where backup was saved
   Future<Either<Failure, String>> exportBackup();
 
+  /// Save backup to local storage (Downloads/expense_backup folder)
+  /// Returns the file path where backup was saved
+  Future<Either<Failure, String>> saveBackupLocally();
+
   /// Import backup from a user-selected file
   /// [mode] determines whether to replace or merge with existing data
   Future<Either<Failure, ImportResult>> importBackup(ImportMode mode);

@@ -25,6 +25,7 @@ class BackupBloc extends Bloc<BackupEvent, BackupState> {
         super(const BackupInitial()) {
     on<CreateBackupEvent>(_onCreateBackup);
     on<ExportBackupEvent>(_onExportBackup);
+    on<SaveBackupLocallyEvent>(_onSaveBackupLocally);
     on<ImportBackupEvent>(_onImportBackup);
     on<ValidateBackupFileEvent>(_onValidateBackup);
     on<LoadBackupListEvent>(_onLoadBackupList);
@@ -60,6 +61,20 @@ class BackupBloc extends Bloc<BackupEvent, BackupState> {
     result.fold(
       (failure) => emit(BackupError(failure)),
       (filePath) => emit(BackupExported(filePath)),
+    );
+  }
+
+  Future<void> _onSaveBackupLocally(
+    SaveBackupLocallyEvent event,
+    Emitter<BackupState> emit,
+  ) async {
+    emit(const BackupLoading('Saving backup to local storage...'));
+
+    final result = await _repository.saveBackupLocally();
+
+    result.fold(
+      (failure) => emit(BackupError(failure)),
+      (filePath) => emit(BackupSavedLocally(filePath)),
     );
   }
 

@@ -56,6 +56,21 @@ class BackupRepositoryImpl implements BackupRepository {
   }
 
   @override
+  Future<Either<Failure, String>> saveBackupLocally() async {
+    try {
+      final backupData = await _createBackupData();
+      final filePath = await _backupFileService.saveBackupToLocalStorage(backupData);
+
+      // Update last backup date
+      await _settingsDataSource.updateLastBackupDate(DateTime.now());
+
+      return Right(filePath);
+    } catch (e) {
+      return Left(BackupFailure.creation(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, ImportResult>> importBackup(ImportMode mode) async {
     try {
       // Let user pick a file

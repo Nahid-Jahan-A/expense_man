@@ -60,6 +60,16 @@ class BackupExported extends BackupState {
   List<Object?> get props => [filePath];
 }
 
+/// State when backup is saved locally successfully
+class BackupSavedLocally extends BackupState {
+  final String filePath;
+
+  const BackupSavedLocally(this.filePath);
+
+  @override
+  List<Object?> get props => [filePath];
+}
+
 /// State when backup validation is complete
 class BackupValidated extends BackupState {
   final BackupValidationResult result;

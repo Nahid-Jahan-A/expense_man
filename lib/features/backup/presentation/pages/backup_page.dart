@@ -137,8 +137,8 @@ class BackupPageContent extends StatelessWidget {
               subtitle: context.tr('export_data_desc'),
               onTap: isLoading
                   ? null
-                  : () => context.read<BackupBloc>().add(const ExportBackupEvent()),
-              trailing: isLoading && state.message?.contains('export') == true
+                  : () => _showExportOptionsDialog(context),
+              trailing: isLoading && (state.message?.contains('export') == true || state.message?.contains('Saving') == true)
                   ? const SizedBox(
                       width: 24,
                       height: 24,
@@ -366,6 +366,140 @@ class BackupPageContent extends StatelessWidget {
     );
   }
 
+  void _showExportOptionsDialog(BuildContext context) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (dialogContext) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurfaceVariant.withAlpha(77),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              context.tr('choose_export_method'),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              context.tr('how_to_export'),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Save Locally Option
+            _buildExportOption(
+              context,
+              icon: Icons.folder_outlined,
+              title: context.tr('save_locally'),
+              subtitle: context.tr('save_locally_desc'),
+              color: Colors.green,
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                context.read<BackupBloc>().add(const SaveBackupLocallyEvent());
+              },
+            ),
+            const SizedBox(height: 12),
+
+            // Share/Export Option
+            _buildExportOption(
+              context,
+              icon: Icons.share_outlined,
+              title: context.tr('share_export'),
+              subtitle: context.tr('share_export_desc'),
+              color: Colors.blue,
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                context.read<BackupBloc>().add(const ExportBackupEvent());
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExportOption(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colorScheme.outline.withAlpha(51)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withAlpha(26),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _handleStateChanges(BuildContext context, BackupState state) {
     if (state is BackupExported) {
       showDialog(
@@ -378,7 +512,62 @@ class BackupPageContent extends StatelessWidget {
           },
         ),
       );
+    } else if (state is BackupSavedLocally) {
+      // Show success toast for local backup
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.tr('backup_saved'),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      state.filePath,
+                      style: const TextStyle(fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      context.read<BackupBloc>().add(const ResetBackupStateEvent());
     } else if (state is BackupImported) {
+      // Show success toast for import
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  context.tr('import_success'),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      // Then show the detailed dialog
       showDialog(
         context: context,
         builder: (_) => ImportSuccessDialog(

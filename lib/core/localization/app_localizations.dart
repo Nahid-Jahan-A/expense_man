@@ -194,6 +194,15 @@ class AppLocalizations {
       'transactions': 'transactions',
       'last_backup': 'Last:',
       'no_backup_yet': 'No backup yet',
+      'save_locally': 'Save Locally',
+      'save_locally_desc': 'Save backup file to Downloads/expense_backup folder',
+      'share_export': 'Share / Export',
+      'share_export_desc': 'Share backup via apps like Google Drive, Email, etc.',
+      'backup_saved': 'Backup Saved!',
+      'backup_saved_desc': 'Your backup has been saved to:',
+      'import_success': 'Import Successful!',
+      'choose_export_method': 'Choose Export Method',
+      'how_to_export': 'How would you like to export your backup?',
 
       // PDF
       'export': 'Export',
@@ -397,6 +406,15 @@ class AppLocalizations {
       'transactions': 'টি লেনদেন',
       'last_backup': 'সর্বশেষ:',
       'no_backup_yet': 'কোনো ব্যাকআপ নেই',
+      'save_locally': 'লোকালি সেভ করুন',
+      'save_locally_desc': 'Downloads/expense_backup ফোল্ডারে ব্যাকআপ ফাইল সেভ করুন',
+      'share_export': 'শেয়ার / এক্সপোর্ট',
+      'share_export_desc': 'Google Drive, Email ইত্যাদি অ্যাপের মাধ্যমে ব্যাকআপ শেয়ার করুন',
+      'backup_saved': 'ব্যাকআপ সেভ হয়েছে!',
+      'backup_saved_desc': 'আপনার ব্যাকআপ সেভ করা হয়েছে:',
+      'import_success': 'আমদানি সফল!',
+      'choose_export_method': 'এক্সপোর্ট পদ্ধতি নির্বাচন করুন',
+      'how_to_export': 'আপনি কীভাবে আপনার ব্যাকআপ এক্সপোর্ট করতে চান?',
 
       // PDF
       'export': 'রপ্তানি',

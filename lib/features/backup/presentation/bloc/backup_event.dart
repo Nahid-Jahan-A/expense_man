@@ -19,6 +19,11 @@ class ExportBackupEvent extends BackupEvent {
   const ExportBackupEvent();
 }
 
+/// Event to save backup locally to Downloads/expense_backup folder
+class SaveBackupLocallyEvent extends BackupEvent {
+  const SaveBackupLocallyEvent();
+}
+
 /// Event to import a backup file
 class ImportBackupEvent extends BackupEvent {
   final ImportMode mode;
