@@ -12,7 +12,20 @@
           "package_name": "com.example.expense_manager"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1013118098347-gpp3rehp0kvlgucmlg35ka56ok77a4fe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.expense_manager",
+            "certificate_hash": "b12c2bf8685c31727991b2117a5da305ec5d191f"
+          }
+        },
+        {
+          "client_id": "1013118098347-864bt3cf96ka338lh4it4br6efh5ebsu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDcf6ScTaiYvBA2xNmckJgpTvUtqlXt5cI"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013118098347-864bt3cf96ka338lh4it4br6efh5ebsu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
