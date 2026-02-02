@@ -8,6 +8,8 @@ import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
 import '../../../category/presentation/bloc/category_bloc.dart';
 import '../../../category/presentation/bloc/category_state.dart';
+import '../../../expense/presentation/bloc/expense_bloc.dart';
+import '../../../expense/presentation/bloc/expense_state.dart';
 import '../../../settings/presentation/bloc/settings_bloc.dart';
 import '../../../settings/presentation/bloc/settings_state.dart';
 import '../../../../core/localization/app_localizations.dart';
@@ -23,17 +25,24 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc, SettingsState>(
-      builder: (context, settingsState) {
-        if (settingsState is! SettingsLoaded) {
-          return const Center(child: CircularProgressIndicator());
+    return BlocListener<ExpenseBloc, ExpenseState>(
+      listener: (context, state) {
+        // Refresh dashboard when expense is added, updated, or deleted
+        if (state is ExpenseOperationSuccess) {
+          context.read<DashboardBloc>().add(const RefreshDashboard());
         }
+      },
+      child: BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (context, settingsState) {
+          if (settingsState is! SettingsLoaded) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        final locale = settingsState.settings.languageCode;
-        final currency = settingsState.currency;
+          final locale = settingsState.settings.languageCode;
+          final currency = settingsState.currency;
 
-        return BlocBuilder<DashboardBloc, DashboardState>(
-          builder: (context, state) {
+          return BlocBuilder<DashboardBloc, DashboardState>(
+            builder: (context, state) {
             if (state is DashboardLoading) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -115,12 +124,14 @@ class DashboardPage extends StatelessWidget {
 
                     // Recent expenses list
                     if (state.recentExpenses.isEmpty)
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: EmptyState(
-                          icon: Icons.receipt_long_outlined,
-                          title: context.tr('no_expenses'),
-                          description: context.tr('no_expenses_desc'),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 32, bottom: 100),
+                          child: EmptyState(
+                            icon: Icons.receipt_long_outlined,
+                            title: context.tr('no_expenses'),
+                            description: context.tr('no_expenses_desc'),
+                          ),
                         ),
                       )
                     else
@@ -162,9 +173,10 @@ class DashboardPage extends StatelessWidget {
             }
 
             return const SizedBox.shrink();
-          },
-        );
-      },
+            },
+          );
+        },
+      ),
     );
   }
 
