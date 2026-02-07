@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:expense_manager/core/error/failures.dart';
 import 'package:expense_manager/features/expense/domain/entities/expense.dart';
 import 'package:expense_manager/features/expense/domain/usecases/add_expense.dart';
 import 'package:expense_manager/features/expense/domain/usecases/delete_expense.dart';
@@ -92,13 +93,13 @@ void main() {
       'emits [ExpenseLoading, ExpenseError] when LoadExpenses fails',
       build: () {
         when(() => mockGetExpenses())
-            .thenAnswer((_) async => const Left('Failed to load expenses'));
+            .thenAnswer((_) async => Left(CacheFailure.read('Failed to load expenses')));
         return expenseBloc;
       },
       act: (bloc) => bloc.add(const LoadExpenses()),
       expect: () => [
         const ExpenseLoading(),
-        const ExpenseError('Failed to load expenses'),
+        ExpenseError(CacheFailure.read('Failed to load expenses')),
       ],
     );
   });
@@ -124,12 +125,12 @@ void main() {
       'emits [ExpenseError] when AddExpenseEvent fails',
       build: () {
         when(() => mockAddExpense(testExpense))
-            .thenAnswer((_) async => const Left('Failed to add expense'));
+            .thenAnswer((_) async => Left(CacheFailure.write('Failed to add expense')));
         return expenseBloc;
       },
       act: (bloc) => bloc.add(AddExpenseEvent(testExpense)),
       expect: () => [
-        const ExpenseError('Failed to add expense'),
+        ExpenseError(CacheFailure.write('Failed to add expense')),
       ],
     );
   });

@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:expense_manager/core/error/failures.dart';
 import 'package:expense_manager/features/category/domain/entities/category.dart';
 import 'package:expense_manager/features/category/domain/usecases/add_category.dart';
 import 'package:expense_manager/features/category/domain/usecases/delete_category.dart';
@@ -81,13 +82,13 @@ void main() {
       'emits [CategoryLoading, CategoryError] when LoadCategories fails',
       build: () {
         when(() => mockGetCategories())
-            .thenAnswer((_) async => const Left('Failed to load categories'));
+            .thenAnswer((_) async => Left(CacheFailure.read('Failed to load categories')));
         return categoryBloc;
       },
       act: (bloc) => bloc.add(const LoadCategories()),
       expect: () => [
         const CategoryLoading(),
-        const CategoryError('Failed to load categories'),
+        CategoryError(CacheFailure.read('Failed to load categories')),
       ],
     );
   });

@@ -4,9 +4,9 @@
 
 | Tool          | Version       | Notes                        |
 |---------------|---------------|------------------------------|
-| Flutter       | **3.29.3**    | Stable channel               |
-| Dart          | **3.7.2**     | Bundled with Flutter          |
-| DevTools      | **2.42.3**    | Bundled with Flutter          |
+| Flutter       | **3.38.9**    | Stable channel               |
+| Dart          | **3.10.8**    | Bundled with Flutter          |
+| DevTools      | **2.51.1**    | Bundled with Flutter          |
 
 ### Install Flutter
 
@@ -16,9 +16,11 @@ brew install --cask flutter
 
 # Or download directly from https://docs.flutter.dev/get-started/install/macos
 
+# Windows: Download from https://docs.flutter.dev/get-started/install/windows
+
 # Verify installation
 flutter --version
-# Expected: Flutter 3.29.3 | Dart 3.7.2
+# Expected: Flutter 3.38.9 | Dart 3.10.8
 ```
 
 If you have a different Flutter version, switch to the correct one:
@@ -28,8 +30,8 @@ flutter channel stable
 flutter upgrade
 # Or pin to exact version using fvm (Flutter Version Management):
 # dart pub global activate fvm
-# fvm install 3.29.3
-# fvm use 3.29.3
+# fvm install 3.38.9
+# fvm use 3.38.9
 ```
 
 ---
@@ -58,12 +60,14 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 |--------------------------|------------------|
 | Android Gradle Plugin    | **8.7.0**        |
 | Gradle                   | **8.10.2**       |
-| Kotlin                   | **1.8.22**       |
+| Kotlin                   | **1.8.22** (upgrade to **2.1.0+** recommended) |
 | NDK Version              | **27.0.12077973**|
 | `compileSdk`             | Managed by Flutter |
 | `minSdk`                 | **23** (Android 6.0) |
 | `targetSdk`              | Managed by Flutter |
 | Java Compatibility       | **11** (source & target) |
+
+> **Note:** Flutter 3.38+ recommends Kotlin 2.1.0 or higher. You may see a warning during builds until Kotlin is upgraded.
 
 ### Gradle JVM Args (android/gradle.properties)
 
@@ -193,7 +197,7 @@ This project uses Firebase for **Auth**, **Storage**, and **Core**. Firebase is 
 | google_fonts             | ^6.2.1         | UI/UX             |
 | flutter_svg              | ^2.0.10+1      | UI/UX             |
 | shimmer                  | ^3.0.0         | UI/UX             |
-| intl                     | ^0.19.0        | Localization      |
+| intl                     | ^0.20.2        | Localization      |
 | uuid                     | ^4.5.1         | Utils             |
 | get_it                   | ^8.0.2         | Utils             |
 | dartz                    | ^0.10.1        | Utils             |
@@ -254,7 +258,7 @@ cd expense_manager
 
 # 2. Ensure correct Flutter version
 flutter --version
-# Must be: Flutter 3.29.3 / Dart 3.7.2
+# Must be: Flutter 3.38.9 / Dart 3.10.8
 # If not, see "Install Flutter" section above
 
 # 3. Ensure JDK 17 is installed and active
@@ -318,7 +322,7 @@ cd ios && pod install --repo-update
 
 ### Xcode version
 
-Xcode 15+ is recommended for Flutter 3.29.x on macOS. Ensure command-line tools are installed:
+Xcode 15+ is recommended for Flutter 3.38.x on macOS. Ensure command-line tools are installed:
 
 ```bash
 xcode-select --install

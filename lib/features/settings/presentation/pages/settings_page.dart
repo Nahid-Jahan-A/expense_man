@@ -368,21 +368,23 @@ class SettingsPage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.tr('theme')),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AppThemeMode.values.map((mode) {
-            return RadioListTile<AppThemeMode>(
-              title: Text(mode.getLabel(locale)),
-              value: mode,
-              groupValue: AppThemeMode.fromValue(state.settings.themeMode),
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<SettingsBloc>().add(ChangeThemeMode(value.value));
-                  Navigator.pop(context);
-                }
-              },
-            );
-          }).toList(),
+        content: RadioGroup<AppThemeMode>(
+          groupValue: AppThemeMode.fromValue(state.settings.themeMode),
+          onChanged: (value) {
+            if (value != null) {
+              context.read<SettingsBloc>().add(ChangeThemeMode(value.value));
+              Navigator.pop(context);
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: AppThemeMode.values.map((mode) {
+              return RadioListTile<AppThemeMode>(
+                title: Text(mode.getLabel(locale)),
+                value: mode,
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -393,32 +395,27 @@ class SettingsPage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.tr('language')),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: const Text('English'),
-              value: 'en',
-              groupValue: currentLocale,
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<SettingsBloc>().add(ChangeLanguage(value));
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('বাংলা'),
-              value: 'bn',
-              groupValue: currentLocale,
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<SettingsBloc>().add(ChangeLanguage(value));
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
+        content: RadioGroup<String>(
+          groupValue: currentLocale,
+          onChanged: (value) {
+            if (value != null) {
+              context.read<SettingsBloc>().add(ChangeLanguage(value));
+              Navigator.pop(context);
+            }
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: const Text('English'),
+                value: 'en',
+              ),
+              RadioListTile<String>(
+                title: const Text('বাংলা'),
+                value: 'bn',
+              ),
+            ],
+          ),
         ),
       ),
     );
